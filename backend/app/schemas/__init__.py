@@ -1,5 +1,6 @@
 """Pydantic schema exports."""
 
+from app.schemas.ai import AIGenerationResponse, DemoGenerateRequest, DemoJobResponse
 from app.schemas.business import (
     BusinessCreate,
     BusinessDetail,
@@ -36,4 +37,7 @@ __all__ = [
     "GoogleMapsScrapeRequest",
     "ScrapeJobRead",
     "ScrapeJobStatus",
+    "AIGenerationResponse",
+    "DemoGenerateRequest",
+    "DemoJobResponse",
 ]

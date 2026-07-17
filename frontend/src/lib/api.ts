@@ -132,6 +132,46 @@ export type GoogleMapsScrapePayload = {
   maximum_results: number;
 };
 
+export type AIResponse = {
+  type: string;
+  content: string;
+  provider: string;
+  model: string;
+};
+
+export type EmailAIResponse = {
+  subject: string;
+  email: string;
+  cta: string;
+  provider: string;
+  model: string;
+};
+
+export type AuditAIResponse = {
+  score: number;
+  content: string;
+  provider: string;
+  model: string;
+};
+
+export type ProposalAIResponse = {
+  content: string;
+  provider: string;
+  model: string;
+};
+
+export type DemoJob = {
+  job_id: string;
+  business_id: number;
+  status: string;
+  current_task: string;
+  progress: number;
+  demo_url: string | null;
+  errors: string[];
+  created_at: string;
+  completed_at: string | null;
+};
+
 export type BusinessPayload = {
   business_name: string;
   category?: string | null;
@@ -302,4 +342,85 @@ export function getScrapeJob(jobId: string): Promise<ScrapeJob> {
 
 export function getLatestScrapeJob(): Promise<ScrapeJob | null> {
   return apiRequest<ScrapeJob | null>("/api/v1/scraper/jobs/latest");
+}
+
+export function generateWhatsapp(businessId: number): Promise<AIResponse> {
+  return apiRequest<AIResponse>(`/api/v1/ai/businesses/${businessId}/whatsapp`, {
+    method: "POST",
+    body: JSON.stringify({}),
+  });
+}
+
+export function generateEmail(businessId: number): Promise<EmailAIResponse> {
+  return apiRequest<EmailAIResponse>(`/api/v1/ai/businesses/${businessId}/email`, {
+    method: "POST",
+  });
+}
+
+export function generateFollowUp(businessId: number, scenario: string): Promise<AIResponse> {
+  return apiRequest<AIResponse>(`/api/v1/ai/businesses/${businessId}/follow-up`, {
+    method: "POST",
+    body: JSON.stringify({ scenario }),
+  });
+}
+
+export function generateAudit(businessId: number): Promise<AuditAIResponse> {
+  return apiRequest<AuditAIResponse>(`/api/v1/ai/businesses/${businessId}/audit`, {
+    method: "POST",
+  });
+}
+
+export function generateProposal(businessId: number): Promise<ProposalAIResponse> {
+  return apiRequest<ProposalAIResponse>(`/api/v1/ai/businesses/${businessId}/proposal`, {
+    method: "POST",
+  });
+}
+
+export function generateSummary(businessId: number): Promise<AIResponse> {
+  return apiRequest<AIResponse>(`/api/v1/ai/businesses/${businessId}/summary`, {
+    method: "POST",
+  });
+}
+
+export function generateObjectionReplies(objection: string): Promise<AIResponse> {
+  return apiRequest<AIResponse>("/api/v1/ai/objection", {
+    method: "POST",
+    body: JSON.stringify({ objection }),
+  });
+}
+
+export function generateConversationReply(
+  businessId: number,
+  message: string,
+): Promise<AIResponse> {
+  return apiRequest<AIResponse>(`/api/v1/ai/businesses/${businessId}/conversation`, {
+    method: "POST",
+    body: JSON.stringify({ message }),
+  });
+}
+
+export function getPrompts(): Promise<Record<string, string>> {
+  return apiRequest<Record<string, string>>("/api/v1/ai/prompts");
+}
+
+export function updatePrompt(key: string, template: string): Promise<Record<string, string>> {
+  return apiRequest<Record<string, string>>(`/api/v1/ai/prompts/${key}`, {
+    method: "PATCH",
+    body: JSON.stringify({ template }),
+  });
+}
+
+export function getDemoTemplates(): Promise<string[]> {
+  return apiRequest<string[]>("/api/v1/ai/demo/templates");
+}
+
+export function startDemoGeneration(businessId: number, template: string): Promise<DemoJob> {
+  return apiRequest<DemoJob>(`/api/v1/ai/businesses/${businessId}/demo/generate`, {
+    method: "POST",
+    body: JSON.stringify({ template }),
+  });
+}
+
+export function getDemoJob(jobId: string): Promise<DemoJob> {
+  return apiRequest<DemoJob>(`/api/v1/ai/demo/jobs/${jobId}`);
 }

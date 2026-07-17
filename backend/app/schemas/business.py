@@ -65,6 +65,12 @@ class DemoRead(BaseModel):
     demo_url: str | None
     video_url: str | None
     notes: str | None
+    deployment_status: str
+    deployment_date: datetime | None
+    revision_history: str | None
+    template_used: str | None
+    version: int
+    archived: bool
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)

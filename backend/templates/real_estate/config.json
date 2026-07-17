@@ -1,0 +1,12 @@
+{
+  "businessName": "",
+  "phone": "",
+  "address": "",
+  "primaryColor": "#334155",
+  "secondaryColor": "#f59e0b",
+  "services": ["Property consultation", "Site visits", "Investment guidance"],
+  "gallery": [],
+  "about": "",
+  "cta": "Request property options",
+  "logo": ""
+}

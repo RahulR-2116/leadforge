@@ -1,0 +1,12 @@
+{
+  "businessName": "",
+  "phone": "",
+  "address": "",
+  "primaryColor": "#991b1b",
+  "secondaryColor": "#fbbf24",
+  "services": ["Dine-in", "Takeaway", "Catering"],
+  "gallery": [],
+  "about": "",
+  "cta": "Reserve a table",
+  "logo": ""
+}

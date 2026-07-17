@@ -28,6 +28,19 @@ class Settings(BaseSettings):
     )
     scraper_proxy_url: str | None = None
     scraper_address_similarity_threshold: float = Field(default=0.88, ge=0, le=1)
+    ai_provider: str = "openai"
+    ai_model: str = "gpt-4o-mini"
+    ai_temperature: float = Field(default=0.7, ge=0, le=2)
+    ai_max_tokens: int = Field(default=1400, ge=64, le=8000)
+    openai_api_key: str | None = None
+    openrouter_api_key: str | None = None
+    gemini_api_key: str | None = None
+    anthropic_api_key: str | None = None
+    deployment_provider: str = "vercel"
+    default_website_template: str = "salon"
+    vercel_token: str | None = None
+    vercel_team_id: str | None = None
+    public_backend_url: str = "http://localhost:8000"
 
     model_config = SettingsConfigDict(
         env_file=".env",

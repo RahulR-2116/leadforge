@@ -1,4 +1,4 @@
-import { Activity, BriefcaseBusiness, MapPinned } from "lucide-react";
+import { Activity, Bot, BriefcaseBusiness, MapPinned } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -8,12 +8,15 @@ import {
   type BusinessStats,
   type ScrapeJob,
 } from "@/lib/api";
+import { AIAssistantPage } from "@/pages/ai-assistant-page";
 import { DashboardPage } from "@/pages/dashboard-page";
 import { LeadManagementPage } from "@/pages/lead-management-page";
 import { ScraperPage } from "@/pages/scraper-page";
 
 export default function App() {
-  const [activePage, setActivePage] = useState<"dashboard" | "leads" | "scraper">("dashboard");
+  const [activePage, setActivePage] = useState<"dashboard" | "leads" | "scraper" | "ai">(
+    "dashboard",
+  );
   const [stats, setStats] = useState<BusinessStats | null>(null);
   const [latestScrapeJob, setLatestScrapeJob] = useState<ScrapeJob | null>(null);
 
@@ -95,6 +98,14 @@ export default function App() {
               <MapPinned className="h-4 w-4" aria-hidden="true" />
               Scraper
             </Button>
+            <Button
+              variant={activePage === "ai" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setActivePage("ai")}
+            >
+              <Bot className="h-4 w-4" aria-hidden="true" />
+              AI
+            </Button>
           </div>
         </div>
       </section>
@@ -110,12 +121,14 @@ export default function App() {
         />
       ) : activePage === "leads" ? (
         <LeadManagementPage onStatsChanged={() => void loadStats()} />
-      ) : (
+      ) : activePage === "scraper" ? (
         <ScraperPage
           latestJob={latestScrapeJob}
           onJobChanged={setLatestScrapeJob}
           onBusinessesImported={() => void loadStats()}
         />
+      ) : (
+        <AIAssistantPage />
       )}
     </main>
   );

@@ -52,6 +52,8 @@ Website detection runs automatically when businesses are created, updated, or im
 
 The Scraper page starts Google Maps lead collection jobs in the background. Jobs import directly into the CRM, show live progress, track found/imported/duplicate/error counts, estimate ETA, and write per-run logs to `backend/logs/scrapes`.
 
+The AI Assistant page generates personalized WhatsApp outreach, cold emails, follow-ups, audits, proposals, lead summaries, objection replies, conversation replies, and demo websites. The backend uses an AI provider abstraction so OpenAI, OpenRouter, Google Gemini, and Anthropic can be selected by environment variable.
+
 To run PostgreSQL locally:
 
 ```powershell
@@ -72,6 +74,24 @@ SCRAPER_TIMEOUT_SECONDS=30
 SCRAPER_USER_AGENT=Mozilla/5.0 ...
 SCRAPER_PROXY_URL=
 SCRAPER_ADDRESS_SIMILARITY_THRESHOLD=0.88
+```
+
+AI settings are also environment-driven:
+
+```text
+AI_PROVIDER=openai
+AI_MODEL=gpt-4o-mini
+AI_TEMPERATURE=0.7
+AI_MAX_TOKENS=1400
+OPENAI_API_KEY=
+OPENROUTER_API_KEY=
+GEMINI_API_KEY=
+ANTHROPIC_API_KEY=
+DEPLOYMENT_PROVIDER=vercel
+DEFAULT_WEBSITE_TEMPLATE=salon
+VERCEL_TOKEN=
+VERCEL_TEAM_ID=
+PUBLIC_BACKEND_URL=http://localhost:8000
 ```
 
 Google Maps scraping uses Playwright. Install browser binaries once in the backend environment:
@@ -130,6 +150,28 @@ GET  /api/v1/scraper/jobs/latest
 GET  /api/v1/scraper/jobs/{job_id}
 ```
 
+AI Assistant API endpoints:
+
+```text
+POST /api/v1/ai/businesses/{business_id}/whatsapp
+POST /api/v1/ai/businesses/{business_id}/email
+POST /api/v1/ai/businesses/{business_id}/follow-up
+POST /api/v1/ai/businesses/{business_id}/audit
+POST /api/v1/ai/businesses/{business_id}/proposal
+POST /api/v1/ai/proposal/pdf
+GET  /api/v1/ai/insights
+POST /api/v1/ai/businesses/{business_id}/summary
+POST /api/v1/ai/objection
+POST /api/v1/ai/businesses/{business_id}/conversation
+GET  /api/v1/ai/prompts
+PATCH /api/v1/ai/prompts/{key}
+GET  /api/v1/ai/demo/templates
+POST /api/v1/ai/businesses/{business_id}/demo/generate
+GET  /api/v1/ai/demo/jobs/{job_id}
+```
+
+Demo websites are generated into `backend/generated/demos` for local preview. If `VERCEL_TOKEN` is configured, LeadForge deploys the generated `index.html` through Vercel and stores the resulting URL in the CRM demo history.
+
 Frontend:
 
 ```powershell
@@ -146,6 +188,8 @@ npm run build
 - Justdial scraper implementation
 - Message template generation
 - Follow-up automation
+- Persistent AI conversation storage and richer prompt roles
+- Netlify, Cloudflare Pages, and GitHub Pages deployment adapters
 - Lead scraping pipelines with Playwright, Requests, and BeautifulSoup
 - Statistics dashboards for lead quality, conversion, and outreach velocity
 - Production deployment configuration

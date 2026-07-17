@@ -1,0 +1,12 @@
+{
+  "businessName": "",
+  "phone": "",
+  "address": "",
+  "primaryColor": "#be185d",
+  "secondaryColor": "#f9a8d4",
+  "services": ["Hair styling", "Skin care", "Beauty consultation"],
+  "gallery": [],
+  "about": "",
+  "cta": "Book an appointment",
+  "logo": ""
+}

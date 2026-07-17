@@ -1,0 +1,12 @@
+{
+  "businessName": "",
+  "phone": "",
+  "address": "",
+  "primaryColor": "#111827",
+  "secondaryColor": "#22c55e",
+  "services": ["Personal training", "Strength equipment", "Fitness plans"],
+  "gallery": [],
+  "about": "",
+  "cta": "Start your fitness journey",
+  "logo": ""
+}

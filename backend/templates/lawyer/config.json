@@ -1,0 +1,12 @@
+{
+  "businessName": "",
+  "phone": "",
+  "address": "",
+  "primaryColor": "#1f2937",
+  "secondaryColor": "#d97706",
+  "services": ["Legal consultation", "Documentation", "Case support"],
+  "gallery": [],
+  "about": "",
+  "cta": "Request a consultation",
+  "logo": ""
+}

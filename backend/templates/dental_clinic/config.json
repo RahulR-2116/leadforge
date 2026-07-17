@@ -1,0 +1,12 @@
+{
+  "businessName": "",
+  "phone": "",
+  "address": "",
+  "primaryColor": "#0369a1",
+  "secondaryColor": "#bae6fd",
+  "services": ["Dental consultation", "Cleaning", "Smile care"],
+  "gallery": [],
+  "about": "",
+  "cta": "Book a dental visit",
+  "logo": ""
+}

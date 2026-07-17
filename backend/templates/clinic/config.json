@@ -1,0 +1,12 @@
+{
+  "businessName": "",
+  "phone": "",
+  "address": "",
+  "primaryColor": "#047857",
+  "secondaryColor": "#a7f3d0",
+  "services": ["Consultation", "Diagnostics", "Patient care"],
+  "gallery": [],
+  "about": "",
+  "cta": "Schedule a visit",
+  "logo": ""
+}

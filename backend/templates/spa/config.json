@@ -1,0 +1,12 @@
+{
+  "businessName": "",
+  "phone": "",
+  "address": "",
+  "primaryColor": "#0f766e",
+  "secondaryColor": "#ccfbf1",
+  "services": ["Relaxation therapy", "Massage", "Wellness packages"],
+  "gallery": [],
+  "about": "",
+  "cta": "Book a session",
+  "logo": ""
+}
