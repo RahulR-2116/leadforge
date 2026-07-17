@@ -5,13 +5,15 @@ import {
   Mail,
   RefreshCw,
   ThumbsDown,
+  Globe2,
+  GlobeLock,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { getHealthCheck, type BusinessStats, type HealthCheck } from "@/lib/api";
+import { getHealthCheck, type BusinessStats, type HealthCheck, type ScrapeJob } from "@/lib/api";
 
 type DashboardMetric = {
   label: string;
@@ -22,9 +24,11 @@ type DashboardMetric = {
 
 export function DashboardPage({
   stats,
+  latestScrapeJob,
   onStatsRefresh,
 }: {
   stats: BusinessStats | null;
+  latestScrapeJob: ScrapeJob | null;
   onStatsRefresh: () => void;
 }) {
   const [health, setHealth] = useState<HealthCheck | null>(null);
@@ -68,6 +72,18 @@ export function DashboardPage({
         value: String(stats?.lost ?? 0),
         detail: "Closed without conversion",
         icon: ThumbsDown,
+      },
+      {
+        label: "With Websites",
+        value: String(stats?.businesses_with_websites ?? 0),
+        detail: "Official domains detected",
+        icon: Globe2,
+      },
+      {
+        label: "Without Websites",
+        value: String(stats?.businesses_without_websites ?? 0),
+        detail: "Need website outreach",
+        icon: GlobeLock,
       },
     ],
     [stats],
@@ -199,6 +215,28 @@ export function DashboardPage({
           </CardContent>
         </Card>
       </div>
+
+      <Card className="mt-4">
+        <CardHeader>
+          <CardTitle>Lead Collection</CardTitle>
+          <CardDescription>Latest Google Maps scraping task and import progress.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {latestScrapeJob ? (
+            <div className="grid gap-4 md:grid-cols-[1.2fr_repeat(4,0.6fr)]">
+              <StatusRow label="Task" value={latestScrapeJob.current_task} />
+              <StatusRow label="Found" value={String(latestScrapeJob.businesses_found)} />
+              <StatusRow label="Imported" value={String(latestScrapeJob.businesses_imported)} />
+              <StatusRow label="Duplicates" value={String(latestScrapeJob.duplicates_skipped)} />
+              <StatusRow label="Errors" value={String(latestScrapeJob.errors.length)} />
+            </div>
+          ) : (
+            <p className="rounded-md border bg-background p-4 text-sm text-muted-foreground">
+              No scraper task has run yet.
+            </p>
+          )}
+        </CardContent>
+      </Card>
     </section>
   );
 }

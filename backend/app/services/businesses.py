@@ -25,6 +25,7 @@ from app.schemas.business import (
     MessageCreate,
     normalize_url,
 )
+from app.services.website_detection import detect_official_website
 
 SortField = Literal[
     "business_name",
@@ -75,8 +76,12 @@ def _business_payload(payload: BusinessCreate | BusinessUpdate) -> dict[str, Any
     for key in ("website", "google_maps_url", "justdial_url"):
         if key in data:
             data[key] = normalize_url(data[key])
-    if data.get("website") and "has_website" not in data:
-        data["has_website"] = True
+    if "website" in data:
+        official_website = detect_official_website(data["website"])
+        data["website"] = official_website
+        data["has_website"] = official_website is not None
+    elif "has_website" not in data and isinstance(payload, BusinessCreate):
+        data["has_website"] = False
     return data
 
 
@@ -295,6 +300,14 @@ def get_business_stats(db: Session) -> BusinessStats:
         ),
         clients_won=count_status(BusinessStatus.CLIENT),
         lost=count_status(BusinessStatus.LOST),
+        businesses_with_websites=db.scalar(
+            select(func.count(Business.id)).where(Business.has_website.is_(True))
+        )
+        or 0,
+        businesses_without_websites=db.scalar(
+            select(func.count(Business.id)).where(Business.has_website.is_(False))
+        )
+        or 0,
     )
 
 

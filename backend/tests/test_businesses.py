@@ -113,6 +113,19 @@ def test_business_crud_search_filter_sort_and_export(client: TestClient) -> None
     assert filtered_response.status_code == 200
     assert filtered_response.json()["items"][0]["business_name"] == "Bright Fitness"
 
+    ignored_website = create_business(
+        client,
+        business_name="Social Only Salon",
+        category="Salon",
+        phone_number="+91 98765 43213",
+        city="Delhi",
+        website="https://facebook.com/social-only-salon",
+        email=None,
+        google_maps_url=None,
+    )
+    assert ignored_website["website"] is None
+    assert ignored_website["has_website"] is False
+
     detail_response = client.get(f"/api/v1/businesses/{created['id']}")
     assert detail_response.status_code == 200
     assert detail_response.json()["business_name"] == "Acme Dental Studio"
@@ -134,6 +147,8 @@ def test_business_crud_search_filter_sort_and_export(client: TestClient) -> None
     stats_response = client.get("/api/v1/businesses/stats")
     assert stats_response.status_code == 200
     assert stats_response.json()["demos_sent"] == 1
+    assert stats_response.json()["businesses_with_websites"] == 1
+    assert stats_response.json()["businesses_without_websites"] == 2
 
     csv_response = client.get("/api/v1/businesses/export", params={"format": "csv"})
     assert csv_response.status_code == 200

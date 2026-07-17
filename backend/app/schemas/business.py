@@ -14,6 +14,7 @@ from pydantic import (
 )
 
 from app.models.business import BusinessStatus
+from app.services.website_detection import has_official_website
 
 PHONE_PATTERN = re.compile(r"^\+?[0-9][0-9\s().-]{6,24}$")
 
@@ -126,9 +127,9 @@ class BusinessBase(BaseModel):
     @model_validator(mode="before")
     @classmethod
     def infer_has_website(cls, values: object) -> object:
-        """Mark leads with a website when a website URL is supplied."""
+        """Mark leads with an official website when one is supplied."""
         if isinstance(values, dict) and values.get("website") and "has_website" not in values:
-            values["has_website"] = True
+            values["has_website"] = has_official_website(str(values["website"]))
         return values
 
 
@@ -218,3 +219,5 @@ class BusinessStats(BaseModel):
     demos_sent: int
     clients_won: int
     lost: int
+    businesses_with_websites: int
+    businesses_without_websites: int

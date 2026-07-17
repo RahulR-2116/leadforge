@@ -16,6 +16,7 @@ from app.schemas.business import (
     MessageRead,
 )
 from app.schemas.health import HealthCheck
+from app.schemas.scraper import GoogleMapsScrapeRequest, ScrapeJobRead, ScrapeJobStatus
 
 __all__ = [
     "BusinessCreate",
@@ -32,4 +33,7 @@ __all__ = [
     "HealthCheck",
     "MessageCreate",
     "MessageRead",
+    "GoogleMapsScrapeRequest",
+    "ScrapeJobRead",
+    "ScrapeJobStatus",
 ]

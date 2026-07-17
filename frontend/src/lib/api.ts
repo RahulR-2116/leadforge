@@ -98,6 +98,38 @@ export type BusinessStats = {
   demos_sent: number;
   clients_won: number;
   lost: number;
+  businesses_with_websites: number;
+  businesses_without_websites: number;
+};
+
+export type ScrapeJobStatus = "QUEUED" | "RUNNING" | "COMPLETED" | "FAILED";
+
+export type ScrapeJob = {
+  job_id: string;
+  source: string;
+  status: ScrapeJobStatus;
+  category: string;
+  city: string;
+  maximum_results: number;
+  current_task: string;
+  current_business: string | null;
+  progress: number;
+  businesses_found: number;
+  businesses_processed: number;
+  businesses_imported: number;
+  duplicates_skipped: number;
+  errors: string[];
+  eta_seconds: number | null;
+  log_file: string | null;
+  started_at: string | null;
+  completed_at: string | null;
+  created_at: string;
+};
+
+export type GoogleMapsScrapePayload = {
+  category: string;
+  city: string;
+  maximum_results: number;
 };
 
 export type BusinessPayload = {
@@ -255,4 +287,19 @@ export function addMessage(
 
 export function exportUrl(format: "csv" | "xlsx"): string {
   return `${API_BASE_URL}/api/v1/businesses/export?format=${format}`;
+}
+
+export function startGoogleMapsScrape(payload: GoogleMapsScrapePayload): Promise<ScrapeJob> {
+  return apiRequest<ScrapeJob>("/api/v1/scraper/google-maps/start", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function getScrapeJob(jobId: string): Promise<ScrapeJob> {
+  return apiRequest<ScrapeJob>(`/api/v1/scraper/jobs/${jobId}`);
+}
+
+export function getLatestScrapeJob(): Promise<ScrapeJob | null> {
+  return apiRequest<ScrapeJob | null>("/api/v1/scraper/jobs/latest");
 }

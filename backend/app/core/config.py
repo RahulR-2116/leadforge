@@ -19,6 +19,15 @@ class Settings(BaseSettings):
         default_factory=lambda: ["http://localhost:5173", "http://127.0.0.1:5173"]
     )
     database_url: str = "sqlite:///./leadforge.db"
+    scraper_max_concurrency: int = Field(default=2, ge=1, le=10)
+    scraper_delay_seconds: float = Field(default=1.5, ge=0)
+    scraper_retries: int = Field(default=2, ge=0, le=5)
+    scraper_timeout_seconds: float = Field(default=30, ge=5)
+    scraper_user_agent: str = (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 LeadForgeBot/1.0"
+    )
+    scraper_proxy_url: str | None = None
+    scraper_address_similarity_threshold: float = Field(default=0.88, ge=0, le=1)
 
     model_config = SettingsConfigDict(
         env_file=".env",

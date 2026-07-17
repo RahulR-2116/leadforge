@@ -1,14 +1,21 @@
-import { Activity, BriefcaseBusiness } from "lucide-react";
+import { Activity, BriefcaseBusiness, MapPinned } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { getBusinessStats, type BusinessStats } from "@/lib/api";
+import {
+  getBusinessStats,
+  getLatestScrapeJob,
+  type BusinessStats,
+  type ScrapeJob,
+} from "@/lib/api";
 import { DashboardPage } from "@/pages/dashboard-page";
 import { LeadManagementPage } from "@/pages/lead-management-page";
+import { ScraperPage } from "@/pages/scraper-page";
 
 export default function App() {
-  const [activePage, setActivePage] = useState<"dashboard" | "leads">("dashboard");
+  const [activePage, setActivePage] = useState<"dashboard" | "leads" | "scraper">("dashboard");
   const [stats, setStats] = useState<BusinessStats | null>(null);
+  const [latestScrapeJob, setLatestScrapeJob] = useState<ScrapeJob | null>(null);
 
   async function loadStats(): Promise<void> {
     try {
@@ -18,18 +25,28 @@ export default function App() {
     }
   }
 
+  async function loadLatestScrapeJob(): Promise<void> {
+    try {
+      setLatestScrapeJob(await getLatestScrapeJob());
+    } catch {
+      setLatestScrapeJob(null);
+    }
+  }
+
   useEffect(() => {
     let isCurrent = true;
 
-    getBusinessStats()
-      .then((businessStats) => {
+    Promise.all([getBusinessStats(), getLatestScrapeJob()])
+      .then(([businessStats, scrapeJob]) => {
         if (isCurrent) {
           setStats(businessStats);
+          setLatestScrapeJob(scrapeJob);
         }
       })
       .catch(() => {
         if (isCurrent) {
           setStats(null);
+          setLatestScrapeJob(null);
         }
       });
 
@@ -70,14 +87,35 @@ export default function App() {
               <BriefcaseBusiness className="h-4 w-4" aria-hidden="true" />
               Leads
             </Button>
+            <Button
+              variant={activePage === "scraper" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setActivePage("scraper")}
+            >
+              <MapPinned className="h-4 w-4" aria-hidden="true" />
+              Scraper
+            </Button>
           </div>
         </div>
       </section>
 
       {activePage === "dashboard" ? (
-        <DashboardPage stats={stats} onStatsRefresh={() => void loadStats()} />
-      ) : (
+        <DashboardPage
+          stats={stats}
+          latestScrapeJob={latestScrapeJob}
+          onStatsRefresh={() => {
+            void loadStats();
+            void loadLatestScrapeJob();
+          }}
+        />
+      ) : activePage === "leads" ? (
         <LeadManagementPage onStatsChanged={() => void loadStats()} />
+      ) : (
+        <ScraperPage
+          latestJob={latestScrapeJob}
+          onJobChanged={setLatestScrapeJob}
+          onBusinessesImported={() => void loadStats()}
+        />
       )}
     </main>
   );
